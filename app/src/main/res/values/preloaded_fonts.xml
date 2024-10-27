@@ -4,6 +4,8 @@
         <item>@font/amarante</item>
         <item>@font/amita</item>
         <item>@font/lobster_two_bold</item>
+        <item>@font/montserrat_bold</item>
+        <item>@font/montserrat_medium</item>
         <item>@font/roboto_bold</item>
     </array>
 </resources>
