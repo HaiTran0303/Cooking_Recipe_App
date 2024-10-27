@@ -1,0 +1,8 @@
+package com.haith.cookingrecipeapp.models;
+
+public class HomeVerModel {
+
+    int image;
+    String name;
+    String timing
+}
