@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
 
         homeHorizontalRec.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL,false));
         homeHorizontalRec.setHasFixedSize(true);
-        homeHorizontalRec.setNestedScrollingEnabled(false);
+        homeHorizontalRec.setNestedScrollingEnabled();
 
         return root;
     }

@@ -18,7 +18,7 @@
         android:layout_height="90dp"
         android:contentDescription="Navigation header"
         android:paddingTop="8dp"
-        android:icon="@drawable/baseline_android"
+        android:src="@drawable/baseline_person_24"
         />
 
     <TextView
