@@ -1,6 +1,8 @@
 package com.haith.cookingrecipeapp;
 
 import android.os.Bundle;
+import android.view.Menu;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
@@ -9,7 +11,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -34,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
             R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite)
             .setDrawerLayout(drawer)
             .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        //Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 }

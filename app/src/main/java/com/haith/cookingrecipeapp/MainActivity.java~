@@ -9,6 +9,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,10 +36,7 @@ public class MainActivity extends AppCompatActivity {
             R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite)
             .setDrawerLayout(drawer)
             .build();
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        NavController navController = Navigation.findNavController(this, R.id.nav)
+
     }
 }
