@@ -13,6 +13,9 @@
         android:theme="@style/Theme.CookingRecipeApp"
         tools:targetApi="31">
         <activity
+            android:name=".DetailDailyRecipeActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
