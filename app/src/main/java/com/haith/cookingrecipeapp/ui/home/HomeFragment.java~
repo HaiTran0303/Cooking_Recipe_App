@@ -13,20 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.haith.cookingrecipeapp.R;
 import com.haith.cookingrecipeapp.adapters.HomeHorAdapter;
 import com.haith.cookingrecipeapp.adapters.HomeVerAdapter;
+import com.haith.cookingrecipeapp.adapters.UpdateVerticalRec;
 import com.haith.cookingrecipeapp.models.HomeHorModel;
 import com.haith.cookingrecipeapp.models.HomeVerModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements UpdateVerticalRec {
 
     RecyclerView homeHorizontalRec, homeVerticalRec;
-    List<HomeHorModel> homeHorModelList;
+    ArrayList<HomeHorModel> homeHorModelList;
     HomeHorAdapter homeHorAdapter;
 
     ///////Vertical//////
-    List<HomeVerModel> homeVerModelList;
+    ArrayList<HomeVerModel> homeVerModelList;
     HomeVerAdapter homeVerAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,7 +46,7 @@ public class HomeFragment extends Fragment {
         homeHorModelList.add(new HomeHorModel(R.drawable.icecream2, "Ice Cream"));
         homeHorModelList.add(new HomeHorModel(R.drawable.sandwich1, "Sandwich"));
 
-        homeHorAdapter = new HomeHorAdapter(getActivity(), homeHorModelList);
+        homeHorAdapter = new HomeHorAdapter(this, getActivity(), homeHorModelList);
         homeHorizontalRec.setAdapter(homeHorAdapter);
         homeHorizontalRec.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL,false));
         homeHorizontalRec.setHasFixedSize(true);
@@ -54,12 +55,21 @@ public class HomeFragment extends Fragment {
 
         ////////////////Vertical RecyclerView/////////////
         homeVerModelList = new ArrayList<>();
-        homeVerModelList.add(new HomeVerModel(R.drawable.pizza4, "Pizza", "4.5"));
-        homeVerModelList.add(new HomeVerModel(R.drawable.burger2, "HamBurger", "3.5"));
-        homeVerModelList.add(new HomeVerModel(R.drawable.fries2, "Fries", "2.5"));
-        homeVerModelList.add(new HomeVerModel(R.drawable.icecream3, "Ice Cream", "4.0"));
-        homeVerModelList.add(new HomeVerModel(R.drawable.sandwich2, "Sandwich", "5.0"));
+
+
+        homeVerAdapter = new HomeVerAdapter(getActivity(), homeVerModelList);
+        homeVerticalRec.setAdapter(homeVerAdapter);
+        homeVerticalRec.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+
 
         return root;
+    }
+
+    @Override
+    public void callBack(int position, ArrayList<HomeVerModel> list) {
+
+        homeVerAdapter = new HomeVerAdapter(getContext(), list);
+        homeVerAdapter.
+        homeVerticalRec.setAdapter(homeVerAdapter);
     }
 }

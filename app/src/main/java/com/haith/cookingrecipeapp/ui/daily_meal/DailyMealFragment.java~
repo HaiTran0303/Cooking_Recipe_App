@@ -40,7 +40,6 @@ public class DailyMealFragment extends Fragment {
 
         dailyMealAdapter = new DailyMealAdapter(getContext(), dailyMealModels);
         recyclerView.setAdapter(dailyMealAdapter);
-        dailyMealAdapter.notifyDataSetChanged();
 
         return root;
     }
