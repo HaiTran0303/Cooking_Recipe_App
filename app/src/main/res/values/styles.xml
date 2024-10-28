@@ -2,4 +2,6 @@
 <resources>
 
     <style name="AppTheme">1</style>
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
 </resources>

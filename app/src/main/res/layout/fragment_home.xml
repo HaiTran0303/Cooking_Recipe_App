@@ -41,13 +41,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/textHello"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amarante"
+            android:fontFamily="@font/montserrat_bold"
             android:text="Hello User"
             android:layout_margin="6dp"
-            android:textSize="35sp"
+            android:textSize="28dp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchText"/>
@@ -56,13 +56,13 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amarante"
+            android:fontFamily="@font/montserrat_medium"
             android:text="What do you want to cook ?"
             android:layout_marginLeft="6dp"
             android:textSize="15sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text1"/>
+            app:layout_constraintTop_toBottomOf="@+id/textHello"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/home_hor_rec"

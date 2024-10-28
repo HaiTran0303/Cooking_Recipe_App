@@ -15,11 +15,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.haith.cookingrecipeapp.models.User;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
 public class RegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private EditText emailEditText, passwordEditText, rePasswordEditText;
+    private FirebaseFirestore db;
+
+    EditText nameEditText, phoneEditText, emailEditText, passwordEditText, rePasswordEditText;
     private Button registerButton;
     private TextView loginText;
 
@@ -33,10 +38,13 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Initialize UI components
+        nameEditText = findViewById(R.id.nameEditText);
+        phoneEditText = findViewById(R.id.phoneEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         rePasswordEditText = findViewById(R.id.rePassword);
@@ -60,9 +68,11 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        String rePassword = rePasswordEditText.getText().toString();
+            String name = nameEditText.getText().toString().trim();
+            String phone = phoneEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+            String rePassword = rePasswordEditText.getText().toString();
 
         if (email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
@@ -70,6 +80,15 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         if (!password.equals(rePassword)) {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Validate inputs
+        if (name.isEmpty()) {
+            nameEditText.setError("Name is required");
+            return;
+        }
+        if (phone.isEmpty()) {
+            phoneEditText.setError("Phone number is required");
             return;
         }
         // Validate password strength
@@ -81,13 +100,27 @@ public class RegistrationActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            saveUserDataToFirestore(userId, name, phone, email);
+                        }
+                    } else {
+                        Toast.makeText(RegistrationActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();                    }
+                });
+    }
+
+    private void saveUserDataToFirestore(String userId, String name, String phone, String email) {
+        User user = new User(name, phone, email);
+        db.collection("Users").document(userId).set(user)
+                .addOnCompleteListener(dataTask -> {
+                    if (dataTask.isSuccessful()) {
                         Toast.makeText(RegistrationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                        // Navigate to the login screen
                         Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(RegistrationActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegistrationActivity.this, "Failed to save user data: " + dataTask.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
