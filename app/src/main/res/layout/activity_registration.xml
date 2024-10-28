@@ -38,7 +38,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/username"
+                android:id="@+id/emailEditText"
                 android:background="@drawable/custom_edittext"
                 android:drawableLeft="@drawable/baseline_supervised_user_circle_28"
                 android:drawablePadding="8dp"
@@ -50,7 +50,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/password"
+                android:id="@+id/passwordEditText"
                 android:background="@drawable/custom_edittext"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
@@ -77,7 +77,7 @@
                 android:onClick="mainActivity"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:id="@+id/loginButton"
+                android:id="@+id/registerButton"
                 android:text="Register"
                 android:textSize="18sp"
                 android:layout_marginTop="30dp"
