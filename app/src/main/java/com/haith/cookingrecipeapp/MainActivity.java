@@ -1,5 +1,6 @@
 package com.haith.cookingrecipeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -18,6 +19,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.haith.cookingrecipeapp.R;
 import com.google.firebase.FirebaseApp;
 
@@ -31,7 +34,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //Initialize Firebase:
         FirebaseApp.initializeApp(this);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        if (currentUser == null) {
+            // User is not signed in, redirect to LoginActivity
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);

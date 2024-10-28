@@ -23,7 +23,11 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button registerButton;
     private TextView loginText;
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
