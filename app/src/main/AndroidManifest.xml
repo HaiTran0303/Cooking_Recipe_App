@@ -13,6 +13,11 @@
         android:theme="@style/Theme.CookingRecipeApp"
         tools:targetApi="31">
         <activity
+            android:name=".utils.MainActivity222"
+            android:exported="false"
+            android:label="@string/title_activity_main222"
+            android:theme="@style/Theme.CookingRecipeApp" />
+        <activity
             android:name=".DetailDailyRecipeActivity"
             android:exported="false" />
         <activity
