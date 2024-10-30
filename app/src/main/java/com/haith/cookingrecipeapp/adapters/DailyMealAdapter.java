@@ -34,16 +34,18 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
 
-        holder.imageView.setImageResource(list.get(position).getImage());
-        holder.name.setText(list.get(position).getName());
-        holder.description.setText(list.get(position).getDescription());
+        holder.imageView.setImageResource(list.get(i).getImage());
+        holder.name.setText(list.get(i).getName());
+        holder.description.setText(list.get(i).getDescription());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailDailyRecipeActivity.class);
-                intent.putExtra("type", list.get(position).getType());
+                intent.putExtra("type", list.get(i).getType()); // pass the type
+                intent.putExtra("title", list.get(i).getName()); // pass the title
+                intent.putExtra("imageView", list.get(i).getImage()); // pass the image id
                 context.startActivity(intent);
             }
         });
@@ -56,8 +58,8 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
-        TextView name, description;
+        ImageView imageView, imageDetailView;
+        TextView name, description, nameTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +67,8 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
             imageView = itemView.findViewById(R.id.imageView);
             name = itemView.findViewById(R.id.imageView2);
             description = itemView.findViewById(R.id.desc);
+            nameTextView = itemView.findViewById(R.id.custom_title);
+            imageDetailView = itemView.findViewById(R.id.detailed_image);
         }
 
 
