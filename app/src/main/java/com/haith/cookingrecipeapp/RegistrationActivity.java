@@ -36,7 +36,9 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText nameEditText, phoneEditText, emailEditText, passwordEditText, rePasswordEditText;
     private Button registerButton;
     private TextView loginText;
-    private final String API_KEY = getString(R.string.api_key);
+    private String API_KEY;
+
+//    private final String API_KEY = getString(R.string.api_key);
 
 
     @Override
@@ -53,6 +55,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         apiService = RetrofitClient.getApiService();
+        API_KEY = getString(R.string.api_key);
 
         // Initialize UI components
         nameEditText = findViewById(R.id.nameEditText);
@@ -61,7 +64,7 @@ public class RegistrationActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         rePasswordEditText = findViewById(R.id.rePassword);
         registerButton = findViewById(R.id.registerButton);
-        loginText = findViewById(R.id.signupText);
+        loginText = findViewById(R.id.signInText);
 
         // Set up Register button listener
         registerButton.setOnClickListener(view -> registerUser());

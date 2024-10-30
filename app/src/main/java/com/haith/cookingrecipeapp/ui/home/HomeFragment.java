@@ -51,52 +51,75 @@ import android.widget.Toast;
 
 public class HomeFragment extends Fragment implements UpdateVerticalRec {
 
+    // UI components
     private RecyclerView homeHorizontalRec, homeVerticalRec;
-    private ArrayList<HomeHorModel> homeHorModelList;
-    private HomeHorAdapter homeHorAdapter;
-    private ArrayList<HomeVerModel> homeVerModelList;
-    private HomeVerAdapter homeVerAdapter;
-    private final String API_KEY = getString(R.string.api_key);
-
     private SwipeRefreshLayout swipeRefreshLayout;
+    private EditText searchText;
+    private TextView textHello;
+
+    // Data components
+    private ArrayList<HomeHorModel> homeHorModelList;
+    private ArrayList<HomeVerModel> homeVerModelList;
+    private Map<String, Map<Integer, List<HomeVerModel>>> recipeCache = new HashMap<>();
+
+    // Adapters
+    private HomeHorAdapter homeHorAdapter;
+    private HomeVerAdapter homeVerAdapter;
+
+    // Firebase and API components
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private SpoonacularApiService apiService;
+
+    // Pagination and state
+    private static final int PAGE_SIZE = 20;
     private int currentPage = 0;
     private boolean isLoading = false;
     private boolean isLastPage = false;
-    private static final int PAGE_SIZE = 10;
-    private String selectedRecipeType = null;
     private boolean initialLoadComplete = false;
     private boolean isScrollListenerAdded = false;
 
-
-    private Map<String, Map<Integer, List<HomeVerModel>>> recipeCache = new HashMap<>();
-    private SpoonacularApiService apiService;
-    private TextView textHello;
-    private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
-
-    private EditText searchText;
+    // Autocomplete and search
     private List<RecipeSuggestion> suggestionList = new ArrayList<>();
-    private List<String> suggestionTitles = new ArrayList<>(); // List to store titles for display in the popup
-
-
-//    private List<String> suggestionList = new ArrayList<>();
+    private List<String> suggestionTitles = new ArrayList<>();
     private ListPopupWindow suggestionPopup;
-
-    private final Handler debounceHandler = new Handler();
+    private Handler debounceHandler = new Handler();
     private Runnable debounceRunnable;
-    private static final long DEBOUNCE_DELAY_MS = 300; // 300ms delay for debouncing
+    private static final long DEBOUNCE_DELAY_MS = 300;
+    private String selectedRecipeType = null;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+    // API key
+    private String API_KEY;
+
+    private void bindingView(View root) {
+        // Bind views
+        homeHorizontalRec = root.findViewById(R.id.home_hor_rec);
+        homeVerticalRec = root.findViewById(R.id.home_ver_rec);
+        swipeRefreshLayout = root.findViewById(R.id.swipe_refresh_layout);
         searchText = root.findViewById(R.id.searchText);
+        textHello = root.findViewById(R.id.textHello);
+
+        // Set up adapters and RecyclerViews
+        setupHorizontalRecyclerView();
+        setupVerticalRecyclerView();
         setupSuggestionPopup();
-        // Set up text listener for autocomplete
+    }
+    private void bindingAction() {
+        setupSwipeRefreshLayout();
+        setupSearchTextListeners();
+    }
+
+    private void setupSwipeRefreshLayout() {
+        swipeRefreshLayout.setOnRefreshListener(this::resetToDefaultState);
+        swipeRefreshLayout.setOnTouchListener((v, event) -> {
+            hideKeyboard();
+            return false;
+        });
+    }
+    private void setupSearchTextListeners() {
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -108,19 +131,15 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
                     suggestionPopup.dismiss();
                 }
                 homeHorAdapter.clearSelection();
-
-
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) {}
         });
+
         searchText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performSearch(searchText.getText().toString()); // Pass the query from the EditText
-                // Clear suggestion list and dismiss popup after search
+                performSearch(searchText.getText().toString());
                 suggestionList.clear();
                 suggestionTitles.clear();
                 suggestionPopup.dismiss();
@@ -128,66 +147,140 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
             }
             return false;
         });
+    }
 
-
-
-
-            // Initialize SwipeRefreshLayout
-        swipeRefreshLayout = root.findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            resetToDefaultState(); // Reset the view to its default state
-            swipeRefreshLayout.setRefreshing(false); // End the refresh animation
-        });
-
-        // Initialize Firebase Auth and Firestore
-        db = FirebaseFirestore.getInstance();
+    private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        textHello = root.findViewById(R.id.textHello);
-        // Call method to retrieve user data
-        loadUserData();
-
-
-        // Set up RecyclerView and adapter
-        homeHorizontalRec = root.findViewById(R.id.home_hor_rec);
-        homeVerticalRec = root.findViewById(R.id.home_ver_rec);
-        // Initialize Retrofit API service
+        db = FirebaseFirestore.getInstance();
         apiService = RetrofitClient.getApiService();
-
-        setupHorizontalRecyclerView();
-        setupVerticalRecyclerView();
-
-        // Add scroll listener if not added already
-        if (!isScrollListenerAdded && homeVerticalRec.getLayoutManager() instanceof LinearLayoutManager ) {
-            homeVerticalRec.addOnScrollListener(new PaginationScrollListener((LinearLayoutManager) homeVerticalRec.getLayoutManager(), PAGE_SIZE) {
-                @Override
-                protected void loadMoreItems() {
-                    Log.d("PaginationScrollListener", "Loading more items...");
-                    isLoading = true; // Set to true when loading starts
-                    currentPage++;
-                    loadRecipes(currentPage); // Load the next page
-                }
-
-                @Override
-                public boolean isLastPage() {
-                    return isLastPage;
-                }
-
-                @Override
-                public boolean isLoading() {
-                    return isLoading;
-                }
-            });
-            isScrollListenerAdded = true;
-        }
+    }
 
 
 
-        //Initial load
+
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        API_KEY = getString(R.string.api_key);
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        bindingView(root);
+        bindingAction();
+
+        initializeFirebase();
+        loadUserData();
         if (!initialLoadComplete) {
             fetchPopularRecipes(currentPage);
             initialLoadComplete = true;
         }
+
         return root;
+
+//        searchText = root.findViewById(R.id.searchText);
+//        setupSuggestionPopup();
+//        // Set up text listener for autocomplete
+//        searchText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                if (charSequence.length() > 2) {
+//                    debounceHandler.removeCallbacks(debounceRunnable);
+//                    debounceRunnable = () -> fetchAutocompleteSuggestions(charSequence.toString());
+//                    debounceHandler.postDelayed(debounceRunnable, DEBOUNCE_DELAY_MS);
+//                } else {
+//                    suggestionPopup.dismiss();
+//                }
+//                homeHorAdapter.clearSelection();
+//
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
+//        searchText.setOnEditorActionListener((v, actionId, event) -> {
+//            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                performSearch(searchText.getText().toString()); // Pass the query from the EditText
+//                // Clear suggestion list and dismiss popup after search
+//                suggestionList.clear();
+//                suggestionTitles.clear();
+//                suggestionPopup.dismiss();
+//                return true;
+//            }
+//            return false;
+//        });
+//
+//
+//
+//
+//            // Initialize SwipeRefreshLayout
+//        swipeRefreshLayout = root.findViewById(R.id.swipe_refresh_layout);
+//        swipeRefreshLayout.setOnRefreshListener(() -> {
+//            resetToDefaultState(); // Reset the view to its default state
+//            swipeRefreshLayout.setRefreshing(false); // End the refresh animation
+//        });
+//        swipeRefreshLayout.setOnTouchListener((v, event) -> {
+//            hideKeyboard(); // Call the hideKeyboard method
+//            return false;
+//        });
+//
+//        // Initialize Firebase Auth and Firestore
+//        db = FirebaseFirestore.getInstance();
+//        mAuth = FirebaseAuth.getInstance();
+//        textHello = root.findViewById(R.id.textHello);
+//        // Call method to retrieve user data
+//        loadUserData();
+//
+//
+//        // Set up RecyclerView and adapter
+//        homeHorizontalRec = root.findViewById(R.id.home_hor_rec);
+//        homeVerticalRec = root.findViewById(R.id.home_ver_rec);
+//        // Initialize Retrofit API service
+//        apiService = RetrofitClient.getApiService();
+//
+//        setupHorizontalRecyclerView();
+//        setupVerticalRecyclerView();
+//
+//        // Add scroll listener if not added already
+//        if (!isScrollListenerAdded && homeVerticalRec.getLayoutManager() instanceof LinearLayoutManager ) {
+//            homeVerticalRec.addOnScrollListener(new PaginationScrollListener((LinearLayoutManager) homeVerticalRec.getLayoutManager(), PAGE_SIZE) {
+//                @Override
+//                protected void loadMoreItems() {
+//                    Log.d("PaginationScrollListener", "Loading more items...");
+//                    isLoading = true; // Set to true when loading starts
+//                    currentPage++;
+//                    loadRecipes(currentPage); // Load the next page
+//                }
+//
+//                @Override
+//                public boolean isLastPage() {
+//                    return isLastPage;
+//                }
+//
+//                @Override
+//                public boolean isLoading() {
+//                    return isLoading;
+//                }
+//            });
+//            isScrollListenerAdded = true;
+//        }
+//
+//
+//
+//        //Initial load
+//        if (!initialLoadComplete) {
+//            fetchPopularRecipes(currentPage);
+//            initialLoadComplete = true;
+//        }
+//        return root;
     }
     private void setupSuggestionPopup() {
         // Initialize ListPopupWindow and set it to anchor to the search EditText
@@ -207,11 +300,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         });
     }
     private void performSearch(String query) {
-        // Hide the keyboard after the search
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-        }
+        hideKeyboard();
+
         // Clear suggestion list and dismiss popup after search
         suggestionList.clear();
         suggestionTitles.clear();
@@ -274,7 +364,16 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         }
     }
 
-
+    private void hideKeyboard() {
+        if (getActivity() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                view.clearFocus();
+            }
+        }
+    }
 
     private void resetToDefaultState() {
         if (!isLoading) {
@@ -283,10 +382,11 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
             currentPage = 0;
             isLastPage = false;
             homeVerModelList.clear();
-            recipeCache.clear(); // Clear cache to force new data load
+            recipeCache.clear();
             homeHorAdapter.clearSelection();
             fetchPopularRecipes(currentPage);
         }
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void loadRecipes(int page) {
@@ -321,6 +421,26 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         homeVerAdapter = new HomeVerAdapter(getActivity(), homeVerModelList);
         homeVerticalRec.setAdapter(homeVerAdapter);
         homeVerticalRec.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+
+        if (!isScrollListenerAdded) {
+            homeVerticalRec.addOnScrollListener(new PaginationScrollListener((LinearLayoutManager) homeVerticalRec.getLayoutManager(), PAGE_SIZE) {
+                @Override
+                protected void loadMoreItems() {
+                    isLoading = true;
+                    currentPage++;
+                    loadRecipes(currentPage);
+                }
+
+                @Override
+                public boolean isLastPage() { return isLastPage; }
+
+                @Override
+                public boolean isLoading() { return isLoading; }
+            });
+            isScrollListenerAdded = true;
+        }
+
+
     }
 
 
@@ -334,7 +454,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         currentPage = 0;
         isLastPage = false;
         homeVerModelList.clear();
-        loadRecipes(currentPage);
+        homeVerAdapter.notifyDataSetChanged();  // Notifies adapter to reset
+        loadRecipes(currentPage);               // Loads recipes for the selected type
     }
 
 
@@ -347,7 +468,6 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
             isLoading = false;
             return;
         }
-
         int offset = page * PAGE_SIZE;
         Call<RecipeResponse> call = apiService.getPopularRecipes(
                 API_KEY, "popularity", "desc", offset, PAGE_SIZE, true
@@ -358,10 +478,10 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Recipe> recipes = response.body().results;
                     cacheAndDisplayRecipes(cacheKey, recipes, page);
-                    isLoading = false; // Reset loading flag here
-                    if (recipes.size() < PAGE_SIZE) {
-                        isLastPage = true;
-                    }
+////                    isLoading = false; // Reset loading flag here
+//                    if (recipes.size() < PAGE_SIZE) {
+//                        isLastPage = true;
+//                    }
 //
 //                    updateVerticalRecyclerView(recipes);
 //                    isLoading = false;
@@ -377,7 +497,6 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
 
             @Override
             public void onFailure(Call<RecipeResponse> call, Throwable t) {
-                Log.e("HomeFragment", "Failed to fetch popular recipes", t);
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(getContext(), "Failed to fetch popular recipes", Toast.LENGTH_SHORT).show();
@@ -433,7 +552,6 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         if (page == 0) {
             homeVerModelList.clear();
             isLastPage = false; // Reset last page flag for fresh load
-
         }
         List<HomeVerModel> models = new ArrayList<>();
         for (Recipe recipe : recipes) {
@@ -444,9 +562,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
                     String.valueOf(recipe.readyInMinutes)
             ));
         }
-
         homeVerModelList.addAll(models);
-
         // Cache the results by type and page
         recipeCache.computeIfAbsent(type, k -> new HashMap<>()).put(page, models);
 

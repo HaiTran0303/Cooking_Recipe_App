@@ -37,15 +37,15 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        if (list == null || list.size() <= position) {
+            return; // Avoids potential crash
+        }
         HomeVerModel model = list.get(position);
         Glide.with(context)
                 .load(model.getImage())
                 .placeholder(R.drawable.icon_main_course)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imageView_food)
-
-
         ;
         holder.textView_title.setText(model.getName());
         holder.textView_likes.setText(model.getAggregateLikes()+" Likes");
@@ -62,7 +62,7 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         CardView random_list_container;
-        TextView textView_title, textView_likes, textView_servings, textView_times;
+        TextView textView_title, textView_likes,textView_times;
         ImageView imageView_food;
 
         public ViewHolder(@NonNull View itemView) {
@@ -73,6 +73,10 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
 //            textView_servings = itemView.findViewById(R.id.textView_servings);
             textView_times = itemView.findViewById(R.id.textView_times);
             imageView_food = itemView.findViewById(R.id.imageView_food);
+
+            if (random_list_container == null || textView_title == null || imageView_food == null) {
+                throw new NullPointerException("View bindings not set correctly in ViewHolder");
+            }
         }
     }
 }
