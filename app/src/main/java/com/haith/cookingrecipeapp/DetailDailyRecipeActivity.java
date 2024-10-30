@@ -41,15 +41,15 @@ public class DetailDailyRecipeActivity extends AppCompatActivity {
         detailedDailyAdapter = new DetailedDailyAdapter(detailedDailyModels);
         recyclerView.setAdapter(detailedDailyAdapter);
         if (type != null && type.equalsIgnoreCase("breakfast")) {
-            detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav1, "breakfast", "description", "4.4", "60min"));
-            detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav2, "breakfast", "description", "4.4", "60min"));
-            detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav3, "breakfast", "description", "4.4", "60min"));
+            detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav1, "Mixed cereal", "description", "4.4", "60min"));
+            detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav2, "Cheese Hamburger", "description", "4.4", "20min"));
+            detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav3, "Spaghetti", "description", "4.4", "30min"));
             detailedDailyAdapter.notifyDataSetChanged();
         }
         if (type != null && type.equalsIgnoreCase("sweets")) {
-            detailedDailyModels.add(new DetailedDailyModel(R.drawable.s1, "breakfast", "description", "4.4", "60min"));
-            detailedDailyModels.add(new DetailedDailyModel(R.drawable.s2, "breakfast", "description", "4.4", "60min"));
-            detailedDailyModels.add(new DetailedDailyModel(R.drawable.s3, "breakfast", "description", "4.4", "60min"));
+            detailedDailyModels.add(new DetailedDailyModel(R.drawable.s1, "Chocolate", "description", "4.4", "60min"));
+            detailedDailyModels.add(new DetailedDailyModel(R.drawable.s2, "Chocolate Donut", "description", "4.4", "60min"));
+            detailedDailyModels.add(new DetailedDailyModel(R.drawable.s3, "Ice-cream", "description", "4.4", "60min"));
             detailedDailyAdapter.notifyDataSetChanged();
         }
     }

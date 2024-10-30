@@ -26,6 +26,6 @@ public class WelcomeActivity extends AppCompatActivity {
         });
     }
     public void register(View view){
-        startActivity(new Intent(WelcomeActivity.this,LoginActivity.class));
+        startActivity(new Intent(WelcomeActivity.this,MainActivity.class));
     }
 }
