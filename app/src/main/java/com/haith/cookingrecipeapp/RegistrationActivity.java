@@ -32,13 +32,40 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private SpoonacularApiService apiService;
-
-    EditText nameEditText, phoneEditText, emailEditText, passwordEditText, rePasswordEditText;
-    private Button registerButton;
-    private TextView loginText;
     private String API_KEY;
 
+    // UI components
+    private EditText nameEditText, phoneEditText, emailEditText, passwordEditText, rePasswordEditText;
+    private Button registerButton;
+    private TextView loginText;
+
 //    private final String API_KEY = getString(R.string.api_key);
+
+    private void initializeFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        apiService = RetrofitClient.getApiService();
+        API_KEY = getString(R.string.api_key);
+    }
+    private void bindingView() {
+        nameEditText = findViewById(R.id.nameEditText);
+        phoneEditText = findViewById(R.id.phoneEditText);
+        emailEditText = findViewById(R.id.emailEditText);
+        passwordEditText = findViewById(R.id.passwordEditText);
+        rePasswordEditText = findViewById(R.id.rePassword);
+        registerButton = findViewById(R.id.registerButton);
+        loginText = findViewById(R.id.signInText);
+    }
+
+    private void bindingAction() {
+        registerButton.setOnClickListener(view -> registerUser());
+        loginText.setOnClickListener(view -> navigateToLogin());
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
 
 
     @Override
@@ -51,28 +78,9 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        // Initialize Firebase Auth and Firestore
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        apiService = RetrofitClient.getApiService();
-        API_KEY = getString(R.string.api_key);
-
-        // Initialize UI components
-        nameEditText = findViewById(R.id.nameEditText);
-        phoneEditText = findViewById(R.id.phoneEditText);
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
-        rePasswordEditText = findViewById(R.id.rePassword);
-        registerButton = findViewById(R.id.registerButton);
-        loginText = findViewById(R.id.signInText);
-
-        // Set up Register button listener
-        registerButton.setOnClickListener(view -> registerUser());
-        // Navigate to Login activity when clicking on the "Login here" text
-        loginText.setOnClickListener(view -> {
-            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-            startActivity(intent);
-        });
+        initializeFirebase();
+        bindingView();
+        bindingAction();
     }
 
 
@@ -82,35 +90,39 @@ public class RegistrationActivity extends AppCompatActivity {
         return password.matches(pattern);
     }
 
-    private void registerUser() {
-            String name = nameEditText.getText().toString().trim();
-            String phone = phoneEditText.getText().toString().trim();
-            String email = emailEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-            String rePassword = rePasswordEditText.getText().toString();
-
+    private boolean validateInputs(String name, String phone, String email, String password, String rePassword) {
         if (email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if (!password.equals(rePassword)) {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
-        // Validate inputs
         if (name.isEmpty()) {
             nameEditText.setError("Name is required");
-            return;
+            return false;
         }
         if (phone.isEmpty()) {
             phoneEditText.setError("Phone number is required");
-            return;
+            return false;
         }
-        // Validate password strength
         if (!isValidPassword(password)) {
             Toast.makeText(this, "Password must be at least 6 characters and contain at least one uppercase letter", Toast.LENGTH_LONG).show();
-            return;
+            return false;
         }
+        return true;
+    }
+
+    private void registerUser() {
+        String name = nameEditText.getText().toString().trim();
+        String phone = phoneEditText.getText().toString().trim();
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString();
+        String rePassword = rePasswordEditText.getText().toString();
+
+        if (!validateInputs(name, phone, email, password, rePassword)) return;
+
         // Create a new user using Firebase
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {

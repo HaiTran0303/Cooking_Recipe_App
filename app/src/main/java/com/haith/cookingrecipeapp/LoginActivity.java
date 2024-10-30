@@ -30,65 +30,60 @@ public class LoginActivity extends AppCompatActivity {
         super.onBackPressed();
         moveTaskToBack(true);
     }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Auth
+    private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-
-
-        // Initialize UI components
+    }
+    private void bindingView() {
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
         signupText = findViewById(R.id.signupText);
         resetPwdText = findViewById(R.id.resetPassword);
-        // Set up Login button listener
+    }
+    private void bindingAction() {
         loginButton.setOnClickListener(view -> loginUser());
-        // Set up Reset Password button listener
+
         resetPwdText.setOnClickListener(view -> {
-                    String email = usernameEditText.getText().toString().trim();
-                    if(email.isEmpty()) {
-                        Toast.makeText(LoginActivity.this, "Enter your email", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    mAuth.sendPasswordResetEmail(email)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "Password reset email sent", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                });
+            String email = usernameEditText.getText().toString().trim();
+            if (email.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "Enter your email", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            resetPassword(email);
+        });
 
-
-
-        // Navigate to Registration activity when clicking on the "SignUp Now" text
         signupText.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
             startActivity(intent);
         });
     }
-
+    private void resetPassword(String email) {
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Password reset email sent", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
     private void loginUser() {
         String email = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Sign in the user using Firebase
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            String firebaseUserId = firebaseUser.getUid();
-                            retrieveSpoonacularCredentials(firebaseUserId);
+                            retrieveSpoonacularCredentials(firebaseUser.getUid());
                         }
                     } else {
                         Toast.makeText(LoginActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -96,6 +91,19 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
     }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        initializeFirebase();
+        bindingView();
+        bindingAction();
+
+    }
+
 
     private void retrieveSpoonacularCredentials(String firebaseUserId) {
         db.collection("Users")
@@ -110,12 +118,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (spoonacularUsername != null && spoonacularHash != null) {
                                 saveUserCredentials(spoonacularUsername, spoonacularHash);
-
-                                // Navigate to main activity
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                navigateToMainActivity();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Error: Spoonacular credentials not found", Toast.LENGTH_LONG).show();
                             }
@@ -123,17 +126,23 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "User data not found", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Failed to retrieve user data: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                        Toast.makeText(LoginActivity.this, "Failed to retrieve user data: " + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 });
-
     }
 
     private void saveUserCredentials(String username, String hash) {
-        // Save to SharedPreferences or other secure storage
         getSharedPreferences("spoonacular_prefs", MODE_PRIVATE).edit()
                 .putString("spoonacular_username", username)
                 .putString("spoonacular_hash", hash)
                 .apply();
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

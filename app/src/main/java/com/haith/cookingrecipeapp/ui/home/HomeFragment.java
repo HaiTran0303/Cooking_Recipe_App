@@ -282,6 +282,19 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
 //        }
 //        return root;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Check if the homeVerModelList is empty or needs refreshing
+        if (homeVerModelList.isEmpty()) {
+            currentPage = 0;         // Reset to the first page
+            isLastPage = false;      // Reset pagination state
+            fetchPopularRecipes(currentPage); // Reload popular recipes
+        }
+    }
+
     private void setupSuggestionPopup() {
         // Initialize ListPopupWindow and set it to anchor to the search EditText
         suggestionPopup = new ListPopupWindow(requireContext());
@@ -370,7 +383,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
             View view = getActivity().getCurrentFocus();
             if (view != null) {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                view.clearFocus();
+                view.clearFocus(); // Clear the EditText focus as well
             }
         }
     }
@@ -382,11 +395,10 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
             currentPage = 0;
             isLastPage = false;
             homeVerModelList.clear();
-            recipeCache.clear();
+            recipeCache.clear(); // Clear cache to force new data load
             homeHorAdapter.clearSelection();
             fetchPopularRecipes(currentPage);
         }
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void loadRecipes(int page) {
@@ -454,8 +466,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         currentPage = 0;
         isLastPage = false;
         homeVerModelList.clear();
-        homeVerAdapter.notifyDataSetChanged();  // Notifies adapter to reset
-        loadRecipes(currentPage);               // Loads recipes for the selected type
+        loadRecipes(currentPage);
     }
 
 
