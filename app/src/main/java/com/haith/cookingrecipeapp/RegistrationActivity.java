@@ -15,18 +15,29 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.haith.cookingrecipeapp.dao.RetrofitClient;
+import com.haith.cookingrecipeapp.dao.SpoonacularApiService;
+import com.haith.cookingrecipeapp.models.ApiModels.ConnectUserResponse;
 import com.haith.cookingrecipeapp.models.User;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private SpoonacularApiService apiService;
 
     EditText nameEditText, phoneEditText, emailEditText, passwordEditText, rePasswordEditText;
     private Button registerButton;
     private TextView loginText;
+    private final String API_KEY = getString(R.string.api_key);
+
 
     @Override
     public void onBackPressed() {
@@ -41,6 +52,7 @@ public class RegistrationActivity extends AppCompatActivity {
         // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        apiService = RetrofitClient.getApiService();
 
         // Initialize UI components
         nameEditText = findViewById(R.id.nameEditText);
@@ -103,15 +115,47 @@ public class RegistrationActivity extends AppCompatActivity {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String userId = firebaseUser.getUid();
-                            saveUserDataToFirestore(userId, name, phone, email);
+                            connectUserToSpoonacular(userId, name, phone, email);
                         }
                     } else {
                         Toast.makeText(RegistrationActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();                    }
                 });
     }
 
-    private void saveUserDataToFirestore(String userId, String name, String phone, String email) {
-        User user = new User(name, phone, email);
+    private void connectUserToSpoonacular(String userId, String name, String phone, String email) {
+        // Call Spoonacular's Connect User endpoint
+        Call<ConnectUserResponse> call = apiService.connectUser(API_KEY, userId);
+        call.enqueue(new Callback<ConnectUserResponse>() {
+            @Override
+            public void onResponse(Call<ConnectUserResponse> call, Response<ConnectUserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String spoonacularUsername = response.body().getUsername();
+                    String spoonacularHash = response.body().getHash();
+                    // Save all user data to Firestore including Spoonacular details
+                    saveUserDataToFirestore(userId, name, phone, email, spoonacularUsername, spoonacularHash);
+                } else {
+                    Toast.makeText(RegistrationActivity.this, "Failed to connect with Spoonacular", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConnectUserResponse> call, Throwable t) {
+                Toast.makeText(RegistrationActivity.this, "Connection error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    private void saveUserDataToFirestore(String userId, String name, String phone, String email, String spoonacularUsername, String spoonacularHash) {
+        // Create user data map including Spoonacular info
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", name);
+        user.put("phone", phone);
+        user.put("email", email);
+        user.put("spoonacularUsername", spoonacularUsername);
+        user.put("spoonacularHash", spoonacularHash);
+
+        // Save to Firestore
         db.collection("Users").document(userId).set(user)
                 .addOnCompleteListener(dataTask -> {
                     if (dataTask.isSuccessful()) {

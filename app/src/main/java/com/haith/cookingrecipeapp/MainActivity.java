@@ -89,17 +89,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-
-
-
-
         mAppBarConfiguration = new AppBarConfiguration.Builder(
             R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite)
-            .setDrawerLayout(drawer)
+            .setOpenableLayout(drawer)
             .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
         // Find the Log Out button inside the NavigationView
         Button logoutButton = navigationView.findViewById(R.id.logoutButton);
         if (logoutButton != null) {

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment"
-    android:background="@color/white">
+    android:background="@color/pastel">
 
 
 

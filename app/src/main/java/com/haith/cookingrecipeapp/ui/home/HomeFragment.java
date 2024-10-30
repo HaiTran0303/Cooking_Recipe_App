@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     private HomeHorAdapter homeHorAdapter;
     private ArrayList<HomeVerModel> homeVerModelList;
     private HomeVerAdapter homeVerAdapter;
-    private static final String API_KEY = "e7ef47ff2101406ea7a607bbde070523";
+    private final String API_KEY = getString(R.string.api_key);
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private int currentPage = 0;
@@ -85,36 +85,6 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
     private final Handler debounceHandler = new Handler();
     private Runnable debounceRunnable;
     private static final long DEBOUNCE_DELAY_MS = 300; // 300ms delay for debouncing
-
-//    private void setupSuggestionPopup() {
-//        // Initialize ListPopupWindow and set it to anchor to the search EditText
-//        suggestionPopup = new ListPopupWindow(requireContext());
-//        suggestionPopup.setAnchorView(searchText);
-//
-//        // Set a basic ArrayAdapter for the suggestion list
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, suggestionList);
-//        suggestionPopup.setAdapter(adapter);
-//
-//        // Set the width of the ListPopupWindow to match the EditText width
-//        suggestionPopup.setWidth(ListPopupWindow.WRAP_CONTENT);
-//        suggestionPopup.setHeight(ListPopupWindow.WRAP_CONTENT);
-//
-//        // Handle item click in ListPopupWindow
-//        suggestionPopup.setOnItemClickListener((parent, view, position, id) -> {
-//            // Set selected suggestion in EditText
-//            searchText.setText(suggestionList.get(position));
-//            searchText.setSelection(searchText.getText().length()); // Move cursor to end of text
-//
-//            // Perform search with the selected suggestion
-//            performSearch(suggestionList.get(position));
-//
-//            // Dismiss the popup
-//            suggestionPopup.dismiss();
-//        });
-//
-//    }
-
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -150,6 +120,10 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         searchText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 performSearch(searchText.getText().toString()); // Pass the query from the EditText
+                // Clear suggestion list and dismiss popup after search
+                suggestionList.clear();
+                suggestionTitles.clear();
+                suggestionPopup.dismiss();
                 return true;
             }
             return false;
@@ -426,7 +400,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
         int offset = page * PAGE_SIZE;
 
         Call<RecipeResponse> call = apiService
-                .getRecipesByType(typeName,API_KEY,offset,PAGE_SIZE,true);
+                .getRecipesByType(typeName,API_KEY,offset,PAGE_SIZE,true,"popularity","desc");
         call.enqueue(new Callback<RecipeResponse>() {
             @Override
             public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {

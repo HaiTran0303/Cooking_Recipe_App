@@ -67,7 +67,8 @@ public class HomeHorAdapter extends RecyclerView.Adapter<HomeHorAdapter.ViewHold
             row_index = position;
             if(selectedPosition == position) {
                 selectedPosition = -1;
-                updateVerticalRec.onRecipeTypeSelected(null);  // Show popular recipes when deselected
+                updateVerticalRec.onRecipeTypeSelected(null);
+                // Show popular recipes when deselected
             } else {
                 selectedPosition = position;
                 updateVerticalRec.onRecipeTypeSelected(list.get(position).getTypeName());

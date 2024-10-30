@@ -15,9 +15,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private EditText usernameEditText, passwordEditText;
     private Button loginButton;
     private TextView signupText;
@@ -34,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
 
         // Initialize UI components
         usernameEditText = findViewById(R.id.username);
@@ -80,16 +85,55 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        // Navigate to main activity or home screen
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            String firebaseUserId = firebaseUser.getUid();
+                            retrieveSpoonacularCredentials(firebaseUserId);
+                        }
                     } else {
                         Toast.makeText(LoginActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
+    }
+
+    private void retrieveSpoonacularCredentials(String firebaseUserId) {
+        db.collection("Users")
+                .document(firebaseUserId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String spoonacularUsername = document.getString("spoonacularUsername");
+                            String spoonacularHash = document.getString("spoonacularHash");
+
+                            if (spoonacularUsername != null && spoonacularHash != null) {
+                                saveUserCredentials(spoonacularUsername, spoonacularHash);
+
+                                // Navigate to main activity
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Error: Spoonacular credentials not found", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, "User data not found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Failed to retrieve user data: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+    }
+
+    private void saveUserCredentials(String username, String hash) {
+        // Save to SharedPreferences or other secure storage
+        getSharedPreferences("spoonacular_prefs", MODE_PRIVATE).edit()
+                .putString("spoonacular_username", username)
+                .putString("spoonacular_hash", hash)
+                .apply();
     }
 }

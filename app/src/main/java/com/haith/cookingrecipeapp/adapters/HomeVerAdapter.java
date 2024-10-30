@@ -49,7 +49,7 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
         ;
         holder.textView_title.setText(model.getName());
         holder.textView_likes.setText(model.getAggregateLikes()+" Likes");
-        holder.textView_servings.setText(model.getServings()+" Persons");
+//        holder.textView_servings.setText(model.getServings()+" Persons");
         holder.textView_times.setText(model.getReadyInMinutes()+" Min");
 
     }
@@ -70,7 +70,7 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
             random_list_container = itemView.findViewById(R.id.random_list_container);
             textView_title = itemView.findViewById(R.id.textView_title);
             textView_likes = itemView.findViewById(R.id.textView_likes);
-            textView_servings = itemView.findViewById(R.id.textView_servings);
+//            textView_servings = itemView.findViewById(R.id.textView_servings);
             textView_times = itemView.findViewById(R.id.textView_times);
             imageView_food = itemView.findViewById(R.id.imageView_food);
         }
