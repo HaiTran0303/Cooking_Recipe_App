@@ -44,6 +44,8 @@ public class DetailDailyRecipeActivity extends AppCompatActivity {
             detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav1, "Mixed cereal", "description", "4.4", "60min"));
             detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav2, "Cheese Hamburger", "description", "4.4", "20min"));
             detailedDailyModels.add(new DetailedDailyModel(R.drawable.fav3, "Spaghetti", "description", "4.4", "30min"));
+
+
             detailedDailyAdapter.notifyDataSetChanged();
         }
         if (type != null && type.equalsIgnoreCase("sweets")) {
