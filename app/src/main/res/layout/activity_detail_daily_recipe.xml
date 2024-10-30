@@ -49,6 +49,14 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Divider to Separate Banner and Content -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        app:layout_anchor="@id/appBar"
+        app:layout_anchorGravity="bottom" />
+
     <!-- Content Section -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
