@@ -79,7 +79,17 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
         android:padding="8dp"
-        android:text="Not yet registered? SignUp Now"
+        android:text="Not yet registered? Sign Up Now"
+        android:textAlignment="center"
+        android:textColor="@color/purple"
+        android:textSize="14sp" />
+    <TextView
+        android:id="@+id/resetPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:padding="8dp"
+        android:text="Reset Password"
         android:textAlignment="center"
         android:textColor="@color/purple"
         android:textSize="14sp" />

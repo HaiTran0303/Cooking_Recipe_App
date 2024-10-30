@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#656565</color>
+    <color name="black">#333333</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#E0E0E0</color>
     <color name="mediumGray">#CD6C6161</color>
     <color name="purple_500">#A2FFD6</color>
     <color name="purple">#8692f7</color>
+    <color name="green">#0FFF03</color>
+    <color name="pastel">#A8E6CF</color>
+    <color name="purpleSlade">#6A1B9A</color>
 </resources>

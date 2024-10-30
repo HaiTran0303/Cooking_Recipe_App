@@ -21,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
     private Button loginButton;
     private TextView signupText;
+    private TextView resetPwdText;
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -39,9 +40,27 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
         signupText = findViewById(R.id.signupText);
-
+        resetPwdText = findViewById(R.id.resetPassword);
         // Set up Login button listener
         loginButton.setOnClickListener(view -> loginUser());
+        // Set up Reset Password button listener
+        resetPwdText.setOnClickListener(view -> {
+                    String email = usernameEditText.getText().toString().trim();
+                    if(email.isEmpty()) {
+                        Toast.makeText(LoginActivity.this, "Enter your email", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    mAuth.sendPasswordResetEmail(email)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, "Password reset email sent", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                });
+
+
 
         // Navigate to Registration activity when clicking on the "SignUp Now" text
         signupText.setOnClickListener(view -> {

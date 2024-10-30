@@ -2,21 +2,29 @@ package com.haith.cookingrecipeapp.models;
 
 public class HomeVerModel {
 
-    int image;
+    String image;  // Updated from int to String to handle URLs
     String name;
-    String rating;
+    String servings;
+    String aggregateLikes;
+    String readyInMinutes;
 
-    public HomeVerModel(int image, String name, String rating) {
+    public HomeVerModel(String image, String name) {
         this.image = image;
         this.name = name;
-        this.rating = rating;
+    }
+    public HomeVerModel(String image, String name, String servings, String aggregateLikes, String readyInMinutes) {
+        this.image = image;
+        this.name = name;
+        this.servings = servings;
+        this.aggregateLikes = aggregateLikes;
+        this.readyInMinutes = readyInMinutes;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -28,11 +36,35 @@ public class HomeVerModel {
         this.name = name;
     }
 
-    public String getRating() {
-        return rating;
+    public String getServings() {
+        return servings;
     }
 
-    public void setRating(String rating) {
-        this.rating = rating;
+    public void setServings(String servings) {
+        this.servings = servings;
     }
+
+    public String getAggregateLikes() {
+        return aggregateLikes;
+    }
+
+    public void setAggregateLikes(String aggregateLikes) {
+        this.aggregateLikes = aggregateLikes;
+    }
+
+    public String getReadyInMinutes() {
+        return readyInMinutes;
+    }
+
+    public void setReadyInMinutes(String readyInMinutes) {
+        this.readyInMinutes = readyInMinutes;
+    }
+
+    //    public String getRating() {
+//        return rating;
+//    }
+//
+//    public void setRating(String rating) {
+//        this.rating = rating;
+//    }
 }
