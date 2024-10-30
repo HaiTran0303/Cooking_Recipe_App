@@ -23,8 +23,7 @@ public class DailyMealFragment extends Fragment {
     List<DailyMealModel> dailyMealModels;
     DailyMealAdapter dailyMealAdapter;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_daily_meal, container, false);
 
@@ -32,11 +31,11 @@ public class DailyMealFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         dailyMealModels = new ArrayList<>();
 
-        dailyMealModels.add(new DailyMealModel(R.drawable.breakfast, "Breakfast", "Description"));
-        dailyMealModels.add(new DailyMealModel(R.drawable.lunch, "Lunch", "Description"));
-        dailyMealModels.add(new DailyMealModel(R.drawable.dinner, "Dinner", "Description"));
-        dailyMealModels.add(new DailyMealModel(R.drawable.sweets, "Sweets", "Description"));
-        dailyMealModels.add(new DailyMealModel(R.drawable.coffe, "Coffe", "Description"));
+        dailyMealModels.add(new DailyMealModel(R.drawable.breakfast, "Breakfast", "Description", "breakfast"));
+        dailyMealModels.add(new DailyMealModel(R.drawable.lunch, "Lunch", "Description", "lunch"));
+        dailyMealModels.add(new DailyMealModel(R.drawable.dinner, "Dinner", "Description", "dinner"));
+        dailyMealModels.add(new DailyMealModel(R.drawable.sweets, "Sweets", "Description", "sweet"));
+        dailyMealModels.add(new DailyMealModel(R.drawable.coffe, "Coffee", "Description", "coffee"));
 
         dailyMealAdapter = new DailyMealAdapter(getContext(), dailyMealModels);
         recyclerView.setAdapter(dailyMealAdapter);

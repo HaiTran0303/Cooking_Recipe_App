@@ -68,35 +68,26 @@ public class MainActivity extends AppCompatActivity {
         TextView navHeaderName = headerView.findViewById(R.id.nav_header_name);
         TextView navHeaderEmail = headerView.findViewById(R.id.nav_header_email);
 
-        if (currentUser != null)  {
+        if (currentUser != null) {
             String userId = currentUser.getUid();
-            db.collection("Users").document(userId).get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            // Get name and email from Firestore and set them in the header
-                            String userName = documentSnapshot.getString("name");
-                            String userEmail = documentSnapshot.getString("email");
+            db.collection("Users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    // Get name and email from Firestore and set them in the header
+                    String userName = documentSnapshot.getString("name");
+                    String userEmail = documentSnapshot.getString("email");
 
-                            navHeaderName.setText(userName != null ? userName : "User Name");
-                            navHeaderEmail.setText(userEmail != null ? userEmail : "user@example.com");
-                        } else {
-                            Toast.makeText(MainActivity.this, "User data not found", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(MainActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
-                    });
+                    navHeaderName.setText(userName != null ? userName : "User Name");
+                    navHeaderEmail.setText(userEmail != null ? userEmail : "user@example.com");
+                } else {
+                    Toast.makeText(MainActivity.this, "User data not found", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(MainActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+            });
 
 
         }
-
-
-
-
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-            R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite)
-            .setDrawerLayout(drawer)
-            .build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_daily_meal, R.id.nav_favourite).setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -122,11 +113,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         //Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         // Handle navigation when the back button on the toolbar is pressed

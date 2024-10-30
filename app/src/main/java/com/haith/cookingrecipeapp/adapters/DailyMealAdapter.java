@@ -1,6 +1,7 @@
 package com.haith.cookingrecipeapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.haith.cookingrecipeapp.DetailDailyRecipeActivity;
 import com.haith.cookingrecipeapp.R;
 import com.haith.cookingrecipeapp.models.DailyMealModel;
 
@@ -37,6 +39,14 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
         holder.imageView.setImageResource(list.get(position).getImage());
         holder.name.setText(list.get(position).getName());
         holder.description.setText(list.get(position).getDescription());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DetailDailyRecipeActivity.class);
+                intent.putExtra("type", list.get(position).getType());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -52,8 +62,8 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imageView = itemView.findViewById(R.id.imageView_food);
-            name = itemView.findViewById(R.id.textView_title);
+            imageView = itemView.findViewById(R.id.imageView);
+            name = itemView.findViewById(R.id.imageView2);
             description = itemView.findViewById(R.id.desc);
         }
 

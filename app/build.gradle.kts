@@ -21,8 +21,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -55,6 +54,7 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
 
     // Other dependencies
+    implementation("com.makeramen:roundedimageview:2.3.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
