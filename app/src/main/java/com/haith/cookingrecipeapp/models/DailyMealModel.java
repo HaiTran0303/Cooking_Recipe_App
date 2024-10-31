@@ -1,41 +1,42 @@
 package com.haith.cookingrecipeapp.models;
 
 public class DailyMealModel {
-
-    int image;
-    String name;
-    String type;
+    int healScore;
+    String image;
+    String id;
     String description;
 
-    public DailyMealModel(int image, String name, String description) {
+    public DailyMealModel(String image, String id, String description,int healScore) {
         this.image = image;
-        this.name = name;
+        this.id = id;
         this.description = description;
+        this.healScore = healScore;
     }
 
-    public int getImage() {
+    public int getHealScore() {
+        return healScore;
+    }
+
+    public void setHealScore(int healScore) {
+        this.healScore = healScore;
+    }
+
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getDescription() {
         return description;

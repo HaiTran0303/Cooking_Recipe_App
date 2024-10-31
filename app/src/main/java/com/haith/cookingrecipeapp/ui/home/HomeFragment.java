@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
 
 
 
-
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
@@ -570,7 +570,8 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
                     recipe.image, recipe.title,
                     String.valueOf(recipe.servings),
                     String.valueOf(recipe.aggregateLikes),
-                    String.valueOf(recipe.readyInMinutes)
+                    String.valueOf(recipe.readyInMinutes),
+                    recipe.id
             ));
         }
         homeVerModelList.addAll(models);
@@ -595,8 +596,9 @@ public class HomeFragment extends Fragment implements UpdateVerticalRec {
             String servings = String.valueOf(recipe.servings);
             String aggregateLikes = String.valueOf(recipe.aggregateLikes);
             String readyInMinutes = String.valueOf(recipe.readyInMinutes);
+            int recipeId = recipe.id;
 
-            homeVerModelList.add(new HomeVerModel(imageUrl, title, servings, aggregateLikes, readyInMinutes));
+            homeVerModelList.add(new HomeVerModel(imageUrl, title, servings, aggregateLikes, readyInMinutes,recipeId));
         }
         homeVerAdapter.notifyDataSetChanged();
     }

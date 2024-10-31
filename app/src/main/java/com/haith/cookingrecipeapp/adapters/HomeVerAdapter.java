@@ -1,6 +1,7 @@
 package com.haith.cookingrecipeapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.haith.cookingrecipeapp.DetailDailyRecipeActivity;
 import com.haith.cookingrecipeapp.R;
 import com.haith.cookingrecipeapp.models.HomeVerModel;
 
@@ -51,6 +53,14 @@ public class HomeVerAdapter extends RecyclerView.Adapter<HomeVerAdapter.ViewHold
         holder.textView_likes.setText(model.getAggregateLikes()+" Likes");
 //        holder.textView_servings.setText(model.getServings()+" Persons");
         holder.textView_times.setText(model.getReadyInMinutes()+" Min");
+        // Set click listener to open DetailDailyRecipeActivity and pass recipeId
+        holder.random_list_container.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailDailyRecipeActivity.class);
+            intent.putExtra("recipeId", model.getRecipeId()); // Pass the recipeId
+            intent.putExtra("title", model.getName()); // Optionally, pass additional details
+            intent.putExtra("imageView", model.getImage()); // Pass image URL or resource
+            context.startActivity(intent);
+        });
 
     }
 
