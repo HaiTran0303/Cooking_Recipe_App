@@ -1,18 +1,15 @@
 package com.haith.cookingrecipeapp.models;
 
 public class DetailedDailyModel {
-    int image;
+    String image;
     String name;
-    String description;
-    String rating;
-    String timing;
+    String amount;
 
-    public DetailedDailyModel(int image, String name, String description, String rating, String timing) {
+
+    public DetailedDailyModel(String image, String name, String amount)  {
         this.image = image;
         this.name = name;
-        this.description = description;
-        this.rating = rating;
-        this.timing = timing;
+        this.amount = amount;
     }
 
     public String getName() {
@@ -23,35 +20,20 @@ public class DetailedDailyModel {
         this.name = name;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public String getDescription() {
-        return description;
+    public String getAmount() {
+        return amount;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAmount(String amount) {
+        this.image = image;
     }
 
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
-    public String getTiming() {
-        return timing;
-    }
-
-    public void setTiming(String timing) {
-        this.timing = timing;
-    }
 }

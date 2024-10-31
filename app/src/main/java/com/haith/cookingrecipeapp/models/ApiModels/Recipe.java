@@ -3,6 +3,7 @@ package com.haith.cookingrecipeapp.models.ApiModels;
 import java.util.ArrayList;
 
 public class Recipe {
+    public Nutrition nutrition;
     public boolean vegetarian;
     public boolean vegan;
     public boolean glutenFree;

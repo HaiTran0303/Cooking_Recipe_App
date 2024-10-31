@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="#D5C8AC"
     android:id="@+id/random_list_container"
     app:cardElevation="8dp"
+    android:onClick="showDetail"
     android:layout_margin="8dp">
     <LinearLayout
         android:layout_width="match_parent"

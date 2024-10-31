@@ -11,18 +11,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.haith.cookingrecipeapp.DetailDailyRecipeActivity;
 import com.haith.cookingrecipeapp.R;
 import com.haith.cookingrecipeapp.models.DetailedDailyModel;
+import com.haith.cookingrecipeapp.models.HomeVerModel;
 
 import java.util.List;
 
 public class DetailedDailyAdapter extends RecyclerView.Adapter<DetailedDailyAdapter.ViewHolder> {
-    List<DetailedDailyModel> list;
-    Context context;
+    private List<DetailedDailyModel> list;
+    private Context context;
 
-    public DetailedDailyAdapter(List<DetailedDailyModel> list) {
-        this.list = list;
+    public DetailedDailyAdapter(Context context, List<DetailedDailyModel> recipes) {
+        this.context = context;
+        this.list = recipes;
     }
 
     @Override
@@ -32,11 +36,26 @@ public class DetailedDailyAdapter extends RecyclerView.Adapter<DetailedDailyAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.imageView.setImageResource(list.get(position).getImage());
-        holder.nameView.setText(list.get(position).getName());
-        holder.desView.setText(list.get(position).getDescription());
-        holder.ratingView.setText(list.get(position).getRating());
-        holder.timingView.setText(list.get(position).getTiming());
+        if (list == null || list.size() <= position) {
+            return; // Avoids potential crash
+        }
+        DetailedDailyModel model = list.get(position);
+        // Construct the Spoonacular image URL
+        String imageUrl = "https://spoonacular.com/cdn/ingredients_100x100/" + model.getImage();
+
+        Glide.with(context)
+                .load(imageUrl)
+                .placeholder(R.drawable.icon_main_course)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.imageView)
+        ;
+        // Set ingredient name
+        holder.ingredient_name.setText(model.getName());
+
+        // Set amount with unit
+        holder.ingredient_quantity.setText(model.getAmount());
+
+
     }
 
     @NonNull
@@ -47,15 +66,14 @@ public class DetailedDailyAdapter extends RecyclerView.Adapter<DetailedDailyAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView nameView, desView, ratingView, timingView;
+        TextView ingredient_name, ingredient_quantity;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.detailed_img);
-            nameView = itemView.findViewById(R.id.detailed_name);
-            desView = itemView.findViewById(R.id.detailed_des);
-            ratingView = itemView.findViewById(R.id.detailed_rating);
-            timingView = itemView.findViewById(R.id.detailed_timing);
+            ingredient_name = itemView.findViewById(R.id.ingredient_name);
+            ingredient_quantity = itemView.findViewById(R.id.ingredient_quantity);
+
         }
     }
 }

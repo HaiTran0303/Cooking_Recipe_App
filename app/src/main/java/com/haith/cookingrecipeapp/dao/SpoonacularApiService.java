@@ -1,6 +1,8 @@
 package com.haith.cookingrecipeapp.dao;
 
+import com.haith.cookingrecipeapp.models.ApiModels.AnalyzedInstruction;
 import com.haith.cookingrecipeapp.models.ApiModels.ConnectUserResponse;
+import com.haith.cookingrecipeapp.models.ApiModels.Recipe;
 import com.haith.cookingrecipeapp.models.ApiModels.RecipeResponse;
 import com.haith.cookingrecipeapp.models.ApiModels.RecipeSuggestion;
 
@@ -9,6 +11,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SpoonacularApiService {
@@ -69,5 +72,19 @@ public interface SpoonacularApiService {
             @Query("username") String username
     );
 
+    // Endpoint to get detailed recipe information by ID
+    @GET("recipes/{id}/information")
+    Call<Recipe> getRecipeInformation(
+            @Path("id") int recipeId,
+            @Query("apiKey") String apiKey,
+            @Query("includeNutrition") boolean includeNutrition
+
+    );
+    // New Endpoint to get analyzed instructions by recipe ID
+    @GET("recipes/{id}/analyzedInstructions")
+    Call<List<AnalyzedInstruction>> getAnalyzedInstructions(
+            @Path("id") int recipeId,
+            @Query("apiKey") String apiKey
+    );
 
 }

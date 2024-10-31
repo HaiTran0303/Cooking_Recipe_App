@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bg"
             android:drawableRight="@drawable/baseline_search_24"
+            android:drawableTint="@color/black"
             android:drawablePadding="12dp"
             android:fontFamily="@font/montserrat_bold"
             android:hint="Search your recipe"
@@ -40,12 +41,11 @@
 
         <ImageView
             android:id="@+id/profileIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/search_bg"
+            android:background="@drawable/letthemcook1"
             android:padding="10dp"
-            android:src="@drawable/baseline_person_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.753"
             app:layout_constraintStart_toEndOf="@+id/searchText"

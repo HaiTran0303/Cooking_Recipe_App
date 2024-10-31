@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.haith.cookingrecipeapp.DetailDailyRecipeActivity;
 import com.haith.cookingrecipeapp.R;
 import com.haith.cookingrecipeapp.models.DailyMealModel;
@@ -34,21 +36,35 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if (list == null || list.size() <= position) {
+            return; // Avoids potential crash
+        }
+        DailyMealModel model = list.get(position);
 
-        holder.imageView.setImageResource(list.get(i).getImage());
-        holder.name.setText(list.get(i).getName());
-        holder.description.setText(list.get(i).getDescription());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DetailDailyRecipeActivity.class);
-                intent.putExtra("type", list.get(i).getType()); // pass the type
-                intent.putExtra("title", list.get(i).getName()); // pass the title
-                intent.putExtra("imageView", list.get(i).getImage()); // pass the image id
-                context.startActivity(intent);
-            }
+
+        // Use a default placeholder if image URL is null
+        String imageUrl = model.getImage() != null ? model.getImage() : "";
+        Glide.with(context)
+                .load(imageUrl)
+                .placeholder(R.drawable.icon_main_course)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.imageView);
+
+        // Bind title and health score
+        holder.name.setText(model.getDescription()); // Assuming getTitle() provides the title
+        holder.description.setText("Health Score: " + String.valueOf(model.getHealScore())); // Convert health score to String
+
+        // Set click listener to open DetailDailyRecipeActivity
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailDailyRecipeActivity.class);
+            intent.putExtra("recipeId", Integer.parseInt(model.getId())); // Assuming `getId()` returns a String
+            intent.putExtra("title", model.getDescription());
+            intent.putExtra("image", model.getImage());
+            intent.putExtra("healthScore", model.getHealScore());
+            context.startActivity(intent);
         });
+
     }
 
     @Override
@@ -58,8 +74,9 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView, imageDetailView;
-        TextView name, description, nameTextView;
+
+        ImageView imageView;
+        TextView name, description;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,8 +84,6 @@ public class DailyMealAdapter extends RecyclerView.Adapter<DailyMealAdapter.View
             imageView = itemView.findViewById(R.id.imageView);
             name = itemView.findViewById(R.id.imageView2);
             description = itemView.findViewById(R.id.desc);
-            nameTextView = itemView.findViewById(R.id.custom_title);
-            imageDetailView = itemView.findViewById(R.id.detailed_image);
         }
 
 

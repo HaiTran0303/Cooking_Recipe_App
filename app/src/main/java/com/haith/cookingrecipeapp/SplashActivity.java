@@ -16,8 +16,8 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setBackgroundDrawableResource(R.drawable.splash); // Optional
-//        setContentView(R.layout.activity_splash); // Create a splash layout with your logo or background
+//        getWindow().setBackgroundDrawableResource(R.drawable.splash); // Optional
+        setContentView(R.layout.activity_splash); // Create a splash layout with your logo or background
 
         // Handler to introduce a delay
         new Handler().postDelayed(() -> {

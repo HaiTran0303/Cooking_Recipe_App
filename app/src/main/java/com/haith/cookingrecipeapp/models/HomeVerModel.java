@@ -7,17 +7,19 @@ public class HomeVerModel {
     String servings;
     String aggregateLikes;
     String readyInMinutes;
+    int recipeId;  // New field for recipe ID
 
     public HomeVerModel(String image, String name) {
         this.image = image;
         this.name = name;
     }
-    public HomeVerModel(String image, String name, String servings, String aggregateLikes, String readyInMinutes) {
+    public HomeVerModel(String image, String name, String servings, String aggregateLikes, String readyInMinutes, int recipeId) {
         this.image = image;
         this.name = name;
         this.servings = servings;
         this.aggregateLikes = aggregateLikes;
         this.readyInMinutes = readyInMinutes;
+        this.recipeId = recipeId;
     }
 
     public String getImage() {
@@ -54,6 +56,13 @@ public class HomeVerModel {
 
     public String getReadyInMinutes() {
         return readyInMinutes;
+    }
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 
     public void setReadyInMinutes(String readyInMinutes) {
