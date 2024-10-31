@@ -27,12 +27,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:text="Hamberger"
             android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:fontFamily="@font/amita"/>
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:fontFamily="@font/montserrat_bold"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

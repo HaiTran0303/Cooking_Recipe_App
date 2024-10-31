@@ -1,74 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment"
-    android:background="@color/white">
+    android:background="@color/pastel">
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!--Search bar-->
         <EditText
             android:id="@+id/searchText"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/search_bg"
             android:drawableRight="@drawable/baseline_search_24"
-            android:drawablePadding="9dp"
-            android:fontFamily="@font/amita"
+            android:drawableTint="@color/black"
+            android:drawablePadding="12dp"
+            android:fontFamily="@font/montserrat_bold"
             android:hint="Search your recipe"
             android:padding="10dp"
             android:textColor="@color/black"
-            android:layout_margin="6dp"
+            android:layout_margin="8dp"
             android:textColorHint="@color/black"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
             android:textSize="13sp"/>
 
+
+        <!--Icon profile-->
+
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/profileIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/search_bg"
+            android:background="@drawable/letthemcook1"
             android:padding="10dp"
-            android:src="@drawable/baseline_person_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.753"
             app:layout_constraintStart_toEndOf="@+id/searchText"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/textHello"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amarante"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/montserrat_bold"
             android:text="Hello User"
-            android:layout_margin="6dp"
-            android:textSize="35sp"
             android:textColor="@color/black"
+            android:textSize="28sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchText"/>
+            app:layout_constraintTop_toBottomOf="@+id/searchText" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amarante"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/montserrat_medium"
             android:text="What do you want to cook ?"
-            android:layout_marginLeft="6dp"
-            android:textSize="15sp"
             android:textColor="@color/black"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text1"/>
+            app:layout_constraintTop_toBottomOf="@+id/textHello" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/home_hor_rec"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="6dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2"/>
@@ -85,6 +96,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-</androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

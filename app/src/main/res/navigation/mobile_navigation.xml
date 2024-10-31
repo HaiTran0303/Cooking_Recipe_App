@@ -9,18 +9,19 @@
         android:id="@+id/nav_home"
         android:name="com.haith.cookingrecipeapp.ui.home.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+    </fragment>
 
     <fragment
         android:id="@+id/nav_daily_meal"
         android:name="com.haith.cookingrecipeapp.ui.daily_meal.DailyMealFragment"
-        android:label="@string/daily_meal"
+        android:label="@string/favourite"
         tools:layout="@layout/fragment_daily_meal" />
 
-    <fragment
-        android:id="@+id/nav_favourite"
-        android:name="com.haith.cookingrecipeapp.ui.favourite.FavouriteFragment"
-        android:label="@string/favourite"
-        tools:layout="@layout/fragment_favourite" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_favourite"-->
+<!--        android:name="com.haith.cookingrecipeapp.ui.favourite.FavouriteFragment"-->
+<!--        android:label="@string/favourite"-->
+<!--        tools:layout="@layout/fragment_favourite" />-->
 
 </navigation>

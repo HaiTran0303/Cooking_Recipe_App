@@ -12,12 +12,26 @@
     <!-- Main content view with AppBar and NavHostFragment -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
+        android:id="@id/main"
         android:layout_height="match_parent">
-
-        <include
-            layout="@layout/app_bar_main"
+        <!-- AppBarLayout with Toolbar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/searchBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextAppearance="@style/ToolbarTitleStyle"
+
+                android:titleTextColor="@color/black" />
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!-- NavHostFragment to display different fragments based on navigation -->
         <fragment
@@ -26,6 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:defaultNavHost="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:navGraph="@navigation/mobile_navigation" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -42,6 +57,7 @@
 
         <!-- Log Out button at the bottom of the drawer -->
         <Button
+            android:id="@+id/logoutButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Log Out"
@@ -49,7 +65,7 @@
             android:textAllCaps="false"
             android:textStyle="bold"
             android:padding="15dp"
-            android:background="@drawable/button_background_color"/>
+            android:background="@color/black"/>
     </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
