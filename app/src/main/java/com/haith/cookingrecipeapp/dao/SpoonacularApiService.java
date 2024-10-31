@@ -1,5 +1,6 @@
 package com.haith.cookingrecipeapp.dao;
 
+import com.haith.cookingrecipeapp.models.ApiModels.ConnectUserResponse;
 import com.haith.cookingrecipeapp.models.ApiModels.RecipeResponse;
 import com.haith.cookingrecipeapp.models.ApiModels.RecipeSuggestion;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SpoonacularApiService {
@@ -16,7 +18,10 @@ public interface SpoonacularApiService {
             @Query("apiKey") String apiKey,
             @Query("offset") int offset,                     // Added offset for pagination
             @Query("number") int number,                     // Set page size
-            @Query("addRecipeInformation") boolean addRecipeInformation
+            @Query("addRecipeInformation") boolean addRecipeInformation,
+            @Query("sort") String sort,
+            @Query("sortDirection") String sortDirection
+
     );
 
     @GET("recipes/complexSearch")
@@ -58,5 +63,11 @@ public interface SpoonacularApiService {
             @Query("addRecipeInformation") boolean addRecipeInformation
 
     );
+    @POST("users/connect")
+    Call<ConnectUserResponse> connectUser(
+            @Query("apiKey") String apiKey,
+            @Query("username") String username
+    );
+
 
 }

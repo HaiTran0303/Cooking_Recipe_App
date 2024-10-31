@@ -12,8 +12,8 @@
     <!-- Main content view with AppBar and NavHostFragment -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
+        android:id="@id/main"
         android:layout_height="match_parent">
-
         <!-- AppBarLayout with Toolbar -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -26,9 +26,11 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/pastel"
+                android:background="@color/searchBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                android:titleTextColor="@android:color/white" />
+                app:titleTextAppearance="@style/ToolbarTitleStyle"
+
+                android:titleTextColor="@color/black" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <!-- NavHostFragment to display different fragments based on navigation -->
